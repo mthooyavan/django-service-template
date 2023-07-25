@@ -1,0 +1,72 @@
+version: '3'
+x-communication-service:
+  &communication-service
+  build: .
+  environment:
+    &communication-service-env
+    DJANGO_SETTINGS_MODULE: communication_service.settings
+    DATABASE_NAME: dev
+    DATABASE_USER: dev
+    DATABASE_PASSWORD: dev
+    DATABASE_HOST: db
+    REDIS_URL: redis://redis
+
+services:
+
+  redis:
+    image: redis
+    expose:
+      - 6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
+
+  db:
+    image: postgres:latest
+    ports:
+      - '5433:5433'
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data:delegated
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: dev
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dev", "-d", "dev"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+  worker:
+    <<: *communication-service
+    command: celery -A communication_service worker -l info
+    environment:
+      <<: *communication-service-env
+    volumes:
+      - .:/code:cached
+    depends_on:
+      - redis
+      - db
+
+  web:
+    <<: *communication-service
+    command: >
+      sh -c "./wait-for-postgres.sh python manage.py runserver 0.0.0.0:8080"
+    env_file:
+      .env
+    environment:
+      <<: *communication-service-env
+    volumes:
+      - .:/code:cached
+    ports:
+      - '8080:8080'
+    depends_on:
+      - redis
+      - worker
+      - db
+
+volumes:
+  db:
