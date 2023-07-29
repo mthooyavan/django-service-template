@@ -77,7 +77,7 @@ django-health-check==3.17.0
     # via -r requirements.in
 django-model-utils==4.3.1
     # via -r requirements.in
-django-phonenumber-field==7.1.0
+django-phonenumber-field[phonenumbers]==7.1.0
     # via -r requirements.in
 django-ses==3.5.0
     # via -r requirements.in
@@ -143,6 +143,8 @@ pbr==5.10.0
     # via stevedore
 pep517==0.13.0
     # via build
+phonenumbers==8.13.17
+    # via django-phonenumber-field
 pip-tools==7.1.0
     # via -r requirements.in
 platformdirs==2.5.2
