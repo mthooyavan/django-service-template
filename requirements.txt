@@ -201,7 +201,7 @@ rich==13.3.4
     # via bandit
 s3transfer==0.6.0
     # via boto3
-sentry-sdk==1.25.1
+sentry-sdk==1.28.1
     # via -r requirements.in
 six==1.16.0
     # via
