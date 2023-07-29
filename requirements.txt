@@ -94,7 +94,7 @@ drf-nested-routers==0.93.4
     # via -r requirements.in
 drf-yasg==1.21.6
     # via -r requirements.in
-factory-boy==3.2.1
+factory-boy==3.3.0
     # via -r requirements.in
 faker==14.2.0
     # via factory-boy
