@@ -92,7 +92,7 @@ djangorestframework-simplejwt==5.2.2
     # via -r requirements.in
 drf-nested-routers==0.93.4
     # via -r requirements.in
-drf-yasg==1.21.6
+drf-yasg==1.21.7
     # via -r requirements.in
 factory-boy==3.2.1
     # via -r requirements.in
