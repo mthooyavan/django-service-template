@@ -1,0 +1,11 @@
+Dear {{username}},
+
+You have just initiated a request to reset the password for your Survey2Connect account: {{email}}.
+
+To set a new password, please copy and paste the following link into your browser:
+
+https://{{ frontend_url }}/password-reset/verification/{{ token }}
+
+For security reasons, this link will expire in 30 minutes.
+
+This an automated email. Please do not reply.

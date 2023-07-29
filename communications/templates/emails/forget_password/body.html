@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Password Reset Request</title>
+  </head>
+  <body>
+    <div style="width: 40rem; display: block; margin-left: auto; margin-right: auto;text-align: justify; font-size: 18px;">
+
+        <h2 style="text-align: center;">Password Reset</h2>
+
+        <h4>Dear {{username}},</h4>
+
+        <p>You have just initiated a request to reset the password for your <strong>Survey2Connect</strong> account: {{email}}</p>
+
+        <p>To set a new password, please click the button below:</p>
+
+        <br/>
+
+        <a target="_blank" href="https://{{ frontend_url }}/password-reset/verification/{{ token }}"
+        style="background-color: teal; padding: 0.5rem; color: white; border-radius: 0.5rem;">
+          Reset Password
+        </a>
+
+        <br/>
+        <br/>
+
+        <p>If the above button doesn't work for you, try copying and pasting the below URL to your browser's address bar:</p>
+
+        <p>https://{{ frontend_url }}/password-reset/verification/{{ token }}</p>
+
+        <p>For security reasons, this link will expire after 30 minutes.</p>
+
+        <h6>This is an automated email. Please do not reply.</h6>
+    </div>
+  </body>
+</html>

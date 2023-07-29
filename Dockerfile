@@ -1,11 +1,33 @@
+# Use an official Python 3.11 runtime as the base image
 FROM python:3.11
 
+# Set environment var PYTHONUNBUFFERED to 1, to ensure that Python output is logged immediately
+# to the terminal without being first buffered. This is useful in making sure that logs from
+# your application are promptly outputted, which can be crucial for debugging if an error occurs
+# during runtime.
 ENV PYTHONUNBUFFERED 1
 
+# Set the working directory in the Docker image to /code. This will be the directory
+# that your code runs in when the Docker container is started.
 WORKDIR /code
 
-COPY requirements.in .
+# Copy the requirements.in file from your project to the working directory in the Docker image.
+COPY requirements.txt .
 
-RUN pip install -r requirements.in
+# Use pip to install the Python dependencies listed in the requirements.in file.
+RUN pip install -r requirements.txt
 
+# Copy the rest of your application code to the working directory in the Docker image.
 COPY . .
+
+# The argument CACHEBUST is used for cache busting. This forces Docker to re-run all
+# steps after this line even if the dependencies in requirements.txt have not changed.
+# This is useful when you want to make sure that the static files are always collected
+# when the Docker image is built.
+ARG CACHEBUST=1
+
+# Run Django's collectstatic command to gather all static files in your project
+# at a single location specified by STATIC_ROOT so that they can be served easily.
+# The --noinput option tells Django to automatically overwrite old static files if
+# there are any conflicts without asking for user input.
+RUN python3 manage.py collectstatic --noinput

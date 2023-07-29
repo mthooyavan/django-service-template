@@ -1,0 +1,3 @@
+An account has been created with this email address. Your temporary password is {{ password }}.
+
+Please reset your password using this link: https://{{ frontend_url }}/password-reset/request

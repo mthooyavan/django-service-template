@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>New Account Created</title>
+  </head>
+  <body>
+    <p>An account has been created with this email address. Your temporary password is {{ password }}.</p>
+    <p>Please reset your password using this
+      <a target="_blank" href="https://{{ frontend_url }}/password-reset/verification/{{ token }}">link</a>
+    </p>
+  </body>
+</html>

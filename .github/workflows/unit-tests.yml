@@ -1,0 +1,42 @@
+name: "Unit Tests"
+on:
+  # Never trigger this workflow at all, temporarily disabled, as this is
+  # a template repository, so it has neither the migration files nor the
+  # unit tests.
+  # TODO: Enable this workflow once the migration files and unit tests are added.
+  workflow_dispatch:
+  #  push:
+  #    branches: ['main', 'releases/**', 'production/**', 'feature/**']
+  #  pull_request:
+  #    branches: ['main', 'releases/**', 'production/**', 'feature/**']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: dev
+          POSTGRES_USER: dev
+          POSTGRES_DB: dev
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install Python Dependency and Unit test
+      run: |
+        pip install -r requirements.txt
+        make test-local

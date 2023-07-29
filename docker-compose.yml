@@ -1,72 +1,105 @@
+# Specifies the version of Docker Compose file format. Version 3 has all the features most applications will need.
 version: '3'
-x-communication-service:
-  &communication-service
-  build: .
-  environment:
-    &communication-service-env
-    DJANGO_SETTINGS_MODULE: communication_service.settings
-    DATABASE_NAME: dev
-    DATABASE_USER: dev
-    DATABASE_PASSWORD: dev
-    DATABASE_HOST: db
-    REDIS_URL: redis://redis
 
+# Define a network for our services to communicate
+networks:
+  app_net:
+    driver: bridge
+
+# Define an anchor named 'backend-service' to avoid code repetition.
+# This object will be merged in other services
+x-backend-service:
+  &backend-service
+  build: .  # build Docker image from Dockerfile in the current directory
+  environment:  # environment variables passed to the service
+    &backend-service-env
+    DJANGO_SETTINGS_MODULE: backend_service.settings  # specify Django settings module
+  env_file: .env  # Load environment variables from a file named .env
+
+# Define all the services for this application
 services:
 
+  # Redis service
   redis:
-    image: redis
-    expose:
+    image: redis  # use the official Redis image
+    expose:  # ports to expose within the internal network, not to the host machine
       - 6379
-    healthcheck:
+    healthcheck:  # healthcheck command for Redis service
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 30s
-      retries: 50
-    restart: always
+      retries: 5
+    restart: always  # always restart this service if it stops
+    networks:  # this service belongs to these networks
+      - app_net
 
+  # PostgreSQL database service
   db:
-    image: postgres:latest
-    ports:
-      - '5433:5433'
-    volumes:
+    image: postgres:latest  # use the official PostgreSQL image
+    env_file: .env  # Load environment variables from a file named .env
+    ports:  # map the PostgreSQL port to a port on the host machine
+      - '${POSTGRES_PORT}:5432'
+    volumes:  # map the data directory in the container to a folder on the host machine
       - ./postgres-data:/var/lib/postgresql/data:delegated
-    environment:
-      POSTGRES_USER: dev
-      POSTGRES_PASSWORD: dev
-      POSTGRES_DB: dev
-    healthcheck:
+    healthcheck:  # healthcheck command for PostgreSQL service
       test: ["CMD", "pg_isready", "-U", "dev", "-d", "dev"]
       interval: 5s
       retries: 5
-    restart: always
+    restart: always  # always restart this service if it stops
+    networks:  # this service belongs to these networks
+      - app_net
 
+  # Celery worker service
   worker:
-    <<: *communication-service
-    command: celery -A communication_service worker -l info
-    environment:
-      <<: *communication-service-env
-    volumes:
+    <<: *backend-service  # use the backend-service anchor to share configuration
+    command: celery -A backend_service worker -l info  # run the Celery worker command
+    volumes:  # map the application code to a directory in the container
       - .:/code:cached
-    depends_on:
-      - redis
-      - db
+    healthcheck:
+      test: ["CMD", "celery", "-A", "backend_service", "inspect", "stats", "||", "exit 1"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+    depends_on:  # this service depends on these other services
+      redis:
+        condition: service_healthy  # only start this service if the redis service is healthy
+      db:
+        condition: service_healthy  # only start this service if the db service is healthy
+    restart: always  # always restart this service if it stops
+    networks:  # this service belongs to these networks
+      - app_net
 
+  # Django web server service
   web:
-    <<: *communication-service
-    command: >
-      sh -c "./wait-for-postgres.sh python manage.py runserver 0.0.0.0:8080"
-    env_file:
-      .env
-    environment:
-      <<: *communication-service-env
-    volumes:
+    <<: *backend-service  # use the backend-service anchor to share configuration
+    command: sh -c "./wait-for-postgres.sh uvicorn --host 0.0.0.0 --port ${APP_PORT} backend_service.asgi:application --reload"
+    # Here are available commands that you could use:
+    # command to run using uvicorn:
+    # sh -c "./wait-for-postgres.sh uvicorn --host 0.0.0.0 --port ${APP_PORT} backend_service.asgi:application --reload"
+    # command to run using gunicorn:
+    # sh -c "./wait-for-postgres.sh gunicorn --bind 0.0.0.0:${APP_PORT} backend_service.wsgi:application --reload"
+    # command to run using Django's built-in server:
+    # sh -c "./wait-for-postgres.sh python manage.py runserver 0.0.0.0:${APP_PORT}"
+    volumes:  # map the application code to a directory in the container
       - .:/code:cached
-    ports:
+    ports:  # map the Django server port to a port on the host machine
       - '8080:8080'
-    depends_on:
-      - redis
-      - worker
-      - db
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:${APP_PORT}/health/?format=json"]
+        interval: 5s
+        timeout: 30s
+        retries: 5
+    depends_on:  # this service depends on these other services
+      redis:
+        condition: service_healthy  # only start this service if the redis service is healthy
+      db:
+        condition: service_healthy  # only start this service if the db service is healthy
+      worker:
+        condition: service_healthy  # only start this service if the worker service is healthy
+    restart: always  # always restart this service if it stops
+    networks:  # this service belongs to these networks
+      - app_net
 
+# Declare volumes that can be used by services. Here, we're declaring a volume named 'db'.
 volumes:
   db:

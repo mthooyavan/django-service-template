@@ -1,0 +1,30 @@
+github:
+- ".github/*"
+- ".gitignore"
+
+api: "*/api/*"
+
+core:
+- "backend_service/settings.py"
+- "backend_service/admin/*"
+- "backend_service/context_processors.py"
+- "backend_service/urls.py"
+- "backend_service/wsgi.py"
+- "backend_service/validators.py"
+
+celery: "core_central_service/celery.py"
+
+tasks: "*/tasks/*"
+
+services: "services/*"
+
+utils: "utils/*"
+
+config:
+- "Dockerfile*"
+- "*.yml"
+- "*.yaml"
+- "Makefile"
+
+requirements:
+- "requirements.*"
