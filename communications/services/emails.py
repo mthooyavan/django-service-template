@@ -18,8 +18,12 @@ class EmailService:
     """
 
     def __init__(
-            self, templates_path, to_addresses: Union[List[User], List[str]],
-            from_address: str = settings.EMAIL_FROM, context: dict = None, user: User = None
+        self,
+        templates_path,
+        to_addresses: Union[List[User], List[str]],
+        from_address: str = settings.EMAIL_FROM,
+        context: dict = None,
+        user: User = None,
     ):
         self.templates_path = templates_path
         self.to_addresses = to_addresses
@@ -30,14 +34,17 @@ class EmailService:
 
     def compile(self):
         self.email = Email.from_templates(
-            self.templates_path, self.context, to=self.to_addresses, from_email=self.from_address
+            self.templates_path,
+            self.context,
+            to=self.to_addresses,
+            from_email=self.from_address,
         )
 
     def send(self, raise_exc: bool = True):
         self.compile()
         self.email.send(fail_silently=not raise_exc)
 
-    def log_only(self) -> 'CommunicationLog':
+    def log_only(self) -> "CommunicationLog":
         """
         Only logs the email but does not send it out
         """
@@ -46,26 +53,26 @@ class EmailService:
         return CommunicationLog.objects.create(
             user=user.id if user else None,
             organisation=user.organisation if user else None,
-            content=f'{self.email.subject}\n\n{self.email.body}',
+            content=f"{self.email.subject}\n\n{self.email.body}",
             sender_address=self.from_address,
             recipient_address=[self.to_addresses],
             is_log_only=True,
             client_notification_template_name=self.templates_path,
-            communication_type=CommunicationLog.CommunicationTypes.EMAIL
+            communication_type=CommunicationLog.CommunicationTypes.EMAIL,
         )
 
-    def send_and_log(self, raise_exc: bool = True) -> Optional['CommunicationLog']:
+    def send_and_log(self, raise_exc: bool = True) -> Optional["CommunicationLog"]:
         self.compile()
         exc = None
         user = self.user if isinstance(self.user, User) else None
         log = CommunicationLog(
             user=user.id if user else None,
             organisation=user.organisation if user else None,
-            content=f'{self.email.subject}\n\n{self.email.body}',
+            content=f"{self.email.subject}\n\n{self.email.body}",
             sender_address=self.from_address,
             recipient_address=[self.to_addresses],
             client_notification_template_name=self.templates_path,
-            communication_type=CommunicationLog.CommunicationTypes.EMAIL
+            communication_type=CommunicationLog.CommunicationTypes.EMAIL,
         )
         try:
             self.send(
@@ -80,14 +87,16 @@ class EmailService:
         return log
 
     # pylint: disable=unnecessary-comprehension
-    def send_with_bulk_context_and_log(self, raise_exc: bool = True) -> List['CommunicationLog']:
+    def send_with_bulk_context_and_log(
+        self, raise_exc: bool = True
+    ) -> List["CommunicationLog"]:
         logs = []
         for email in self.to_addresses:
             if self.context.get(email):
                 service = EmailService(
                     context=self.context[email],
                     to_addresses=[email],
-                    templates_path=self.templates_path
+                    templates_path=self.templates_path,
                 )
                 logs.append(service.send_and_log(raise_exc))
         return logs

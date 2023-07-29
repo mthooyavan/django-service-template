@@ -9,7 +9,9 @@ def slug_generator() -> str:
     Generates and returns a unique string of length 10-11
     Examples: 8273176561, 10153962259
     """
-    return str(int(timezone.now().timestamp()) + random.randint(1, 9999999999))  # nosec B311
+    return str(
+        int(timezone.now().timestamp()) + random.randint(1, 9999999999)
+    )  # nosec B311
 
 
 class AutoUpdateMixin:
@@ -25,9 +27,10 @@ class AutoUpdateMixin:
     """
 
     def save(self, *args, **kwargs):
-
-        if kwargs.get('update_fields'):
-            kwargs['update_fields'] = list(set(list(kwargs['update_fields']) + ['updated_at']))
+        if kwargs.get("update_fields"):
+            kwargs["update_fields"] = list(
+                set(list(kwargs["update_fields"]) + ["updated_at"])
+            )
 
         super().save(*args, **kwargs)
 
@@ -36,6 +39,7 @@ class CustomModel(AutoUpdateMixin, models.Model):
     """
     This model should be inherited by all models of the codebase.
     """
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

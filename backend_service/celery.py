@@ -6,11 +6,11 @@ from celery import Celery
 from celery.schedules import crontab  # pylint: disable=unused-import
 from django.conf import settings
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend_service.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend_service.settings")
 
 # pylint: disable=invalid-name
-app = Celery('backend_service')
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app = Celery("backend_service")
+app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 # Task Routing
@@ -27,11 +27,9 @@ app.conf.tasks_acks_late = settings.CELERY_TASKS_ACK_LATE or False
 
 # https://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html#crontab-schedules
 app.conf.beat_schedule = {
-
     ###################################################################
     # Please order the cron schedule based on frequency of it running #
     ###################################################################
-
     # Example
     # Executes every minute
     # 'scheduled-tasks-executor': {

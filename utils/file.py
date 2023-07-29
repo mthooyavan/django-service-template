@@ -40,7 +40,7 @@ def file_size(file) -> int:
     Returns:
     int: The size of the file in bytes
     """
-    size = getattr(file, '_size', None)
+    size = getattr(file, "_size", None)
     if size is not None:
         return size
 
@@ -53,7 +53,7 @@ class CSVFileCompressionMixin:
     This class provides methods to compress a csv file using gzip.
     """
 
-    def compress(self, file, encoding='utf-8'):
+    def compress(self, file, encoding="utf-8"):
         """
         Compress a file using gzip.
 
@@ -68,7 +68,7 @@ class CSVFileCompressionMixin:
         io.BytesIO: A BytesIO object containing the gzipped file
         """
         buffer = io.BytesIO()
-        with gzip.GzipFile(mode='w', fileobj=buffer) as z_file:
+        with gzip.GzipFile(mode="w", fileobj=buffer) as z_file:
             for line in file:
                 z_file.write(line.encode(encoding))
         buffer.seek(0, os.SEEK_SET)

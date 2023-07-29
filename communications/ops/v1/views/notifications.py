@@ -14,18 +14,18 @@ class SendNotificationsView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, *args, **kwargs):
-        if self.kwargs['type'] == 'email':
+        if self.kwargs["type"] == "email":
             serializer = NotificationValidationSerializer(data=self.request.data)
             if serializer.is_valid():
                 data = serializer.data
                 send_notifications.delay(data)
                 return Response(
                     data={"message": "Notification request is being processed."},
-                    status=status.HTTP_200_OK
+                    status=status.HTTP_200_OK,
                 )
             return errors.handle(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
         return Response(
             data={"message": "Invalid notifications request"},
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_400_BAD_REQUEST,
         )

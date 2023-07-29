@@ -1,6 +1,6 @@
 import re
 
-PROTOCOLS_AND_WWW = {r'^https?:\/\/', r'^www\.'}
+PROTOCOLS_AND_WWW = {r"^https?:\/\/", r"^www\."}
 
 
 def get_ip_address(request):
@@ -20,12 +20,12 @@ def get_ip_address(request):
     If no request or invalid request is provided, returns None.
     """
     ip_address = None
-    if request and hasattr(request, 'META'):
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if request and hasattr(request, "META"):
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
-            ip_address = x_forwarded_for.split(',')[0]
+            ip_address = x_forwarded_for.split(",")[0]
         else:
-            ip_address = request.META.get('REMOTE_ADDR')
+            ip_address = request.META.get("REMOTE_ADDR")
     return ip_address
 
 
@@ -39,9 +39,9 @@ def get_user_agent(request):
     Returns:
     str: The User Agent string. If no request or invalid request is provided, returns 'unknown'.
     """
-    user_agent = 'unknown'
-    if request and hasattr(request, 'META'):
-        user_agent = request.META.get('HTTP_USER_AGENT', 'unknown')
+    user_agent = "unknown"
+    if request and hasattr(request, "META"):
+        user_agent = request.META.get("HTTP_USER_AGENT", "unknown")
     return user_agent
 
 
@@ -60,8 +60,8 @@ def get_referer_domain(request) -> str:
     str: The domain of the referer as a string.
     If the referer header is not present, returns an empty string.
     """
-    referer_header = request.META.get('HTTP_REFERER', '')
+    referer_header = request.META.get("HTTP_REFERER", "")
     for pattern in PROTOCOLS_AND_WWW:
-        referer_header = re.sub(pattern, '', referer_header)
-    referer_domain = referer_header.split('/')[0]
+        referer_header = re.sub(pattern, "", referer_header)
+    referer_domain = referer_header.split("/")[0]
     return referer_domain

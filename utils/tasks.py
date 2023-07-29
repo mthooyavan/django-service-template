@@ -56,6 +56,9 @@ def send_csv_email(
         user = user_model.objects.get(pk=user_id)
         instance.generate_csv_and_send_email(queryset, columns, user)
     except ObjectDoesNotExist as e:
-        logger.info("Sending CSV through email failed because user with id %s doesn't exist.", user_id)
+        logger.info(
+            "Sending CSV through email failed because user with id %s doesn't exist.",
+            user_id,
+        )
         if not fail_silently:
             raise e

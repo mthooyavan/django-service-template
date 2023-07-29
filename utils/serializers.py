@@ -37,16 +37,16 @@ class CSVFileOrEmailModelMixin(CSVFileCompressionMixin):
     MAX_INLINE_LIMIT = 500
 
     # Message to display when the requested CSV is too large to generate immediately
-    LARGE_CSV_MSG = 'The requested file is too large to download.'
+    LARGE_CSV_MSG = "The requested file is too large to download."
 
     # Message to display when the CSV is going to be emailed to the user
-    EMAIL_CSV_MSG = 'You will receive an email with the report once completed.'
+    EMAIL_CSV_MSG = "You will receive an email with the report once completed."
 
     # Flag indicating whether to send email or not
     send_email = True
 
     # Path to the email templates for CSV download
-    email_templates_path = 'emails/csv_download'
+    email_templates_path = "emails/csv_download"
 
     # Filename of the generated CSV file
     csv_file_name = None
@@ -89,12 +89,12 @@ class CSVFileOrEmailModelMixin(CSVFileCompressionMixin):
             queryset = model.objects.filter(pk__in=(o.pk for o in queryset))
 
         columns = self.get_columns(request, queryset)
-        if queryset[:self.MAX_INLINE_LIMIT + 1].count() <= self.MAX_INLINE_LIMIT:
+        if queryset[: self.MAX_INLINE_LIMIT + 1].count() <= self.MAX_INLINE_LIMIT:
             return self.get_buffer(queryset, columns)
 
         msg = self.LARGE_CSV_MSG
         if self.send_email:
-            msg = f'{self.LARGE_CSV_MSG} {self.EMAIL_CSV_MSG}'
+            msg = f"{self.LARGE_CSV_MSG} {self.EMAIL_CSV_MSG}"
             self.initialize_email_task(request, queryset, columns)
         raise CSVTooLarge(msg)
 
@@ -144,7 +144,7 @@ class CSVFileOrEmailModelMixin(CSVFileCompressionMixin):
             A StringIO object containing a single CSV cell with the notification message.
         """
         buffer = io.StringIO()
-        writer = csv.DictWriter(buffer, [f'{self.LARGE_CSV_MSG} {self.EMAIL_CSV_MSG}'])
+        writer = csv.DictWriter(buffer, [f"{self.LARGE_CSV_MSG} {self.EMAIL_CSV_MSG}"])
         writer.writeheader()
         buffer.seek(0)
         return buffer
@@ -163,14 +163,20 @@ class CSVFileOrEmailModelMixin(CSVFileCompressionMixin):
         """
         # pylint: disable=import-outside-toplevel
         from communications.utils import Email, FileType, append_ext
+
         buffer = self.get_buffer(queryset, columns)
         compressed, buffer = self.conditional_compress(buffer)
         model = self.get_csv_model()
-        context = {'user': user, 'request_for': model._meta.verbose_name_plural.capitalize()}
+        context = {
+            "user": user,
+            "request_for": model._meta.verbose_name_plural.capitalize(),
+        }
         email = Email.from_templates(self.email_templates_path, context, [user])
         csv_file_name = self.get_csv_file_name()
         if compressed:
-            email.with_gzip_file(append_ext(csv_file_name, FileType.csv.ext), buffer).send()
+            email.with_gzip_file(
+                append_ext(csv_file_name, FileType.csv.ext), buffer
+            ).send()
         else:
             email.with_csv_file(csv_file_name, buffer).send()
 
@@ -186,10 +192,18 @@ class CSVFileOrEmailModelMixin(CSVFileCompressionMixin):
             queryset: A Django QuerySet that provides data to generate CSV.
             columns: A list of column names to be included in the CSV.
         """
-        generator_class_import_path = f'{self.__class__.__module__}.{self.__class__.__qualname__}'
+        generator_class_import_path = (
+            f"{self.__class__.__module__}.{self.__class__.__qualname__}"
+        )
         model_class_label = self.get_csv_model()._meta.label
-        pks = list(queryset.values_list('pk', flat=True))
-        send_csv_email.delay(pks, columns, generator_class_import_path, model_class_label, request.user.pk)
+        pks = list(queryset.values_list("pk", flat=True))
+        send_csv_email.delay(
+            pks,
+            columns,
+            generator_class_import_path,
+            model_class_label,
+            request.user.pk,
+        )
 
     def get_csv_model(self):
         """
@@ -199,7 +213,7 @@ class CSVFileOrEmailModelMixin(CSVFileCompressionMixin):
         Returns:
             The model class providing data for CSV.
         """
-        return getattr(self, 'model', None)
+        return getattr(self, "model", None)
 
     def get_csv_file_name(self) -> str:
         """

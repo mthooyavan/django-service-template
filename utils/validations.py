@@ -5,7 +5,7 @@ from communications.utils import Email
 
 
 def validate_email_template(template):
-    absolute_template = f'emails/{template}'
+    absolute_template = f"emails/{template}"
     try:
         get_template(absolute_template)
         return None

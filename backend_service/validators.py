@@ -6,16 +6,18 @@ from django.utils.translation import gettext_lazy as _
 
 class PasswordCombinationValidator:
     def validate(self, password, user=None):
-        if not re.findall(r'[\d]', password) \
-                or not re.findall(r'[A-Z]', password) \
-                or not re.findall(r'[a-z]', password) \
-                or not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password):
+        if (
+            not re.findall(r"[\d]", password)
+            or not re.findall(r"[A-Z]", password)
+            or not re.findall(r"[a-z]", password)
+            or not re.findall(r'[()[\]{}|\\`~!@#$%^&*_\-+=;:\'",<>./?]', password)
+        ):
             raise ValidationError(
                 _(
                     "Password must contain at least "
                     "1 digit, 1 uppercase letter, 1 lowercase letter, and 1 symbol."
                 ),
-                code='password_combination_error',
+                code="password_combination_error",
             )
 
     def get_help_text(self):

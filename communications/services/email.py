@@ -1,8 +1,7 @@
 from typing import List, Union
 
 from django.core.mail.backends.base import BaseEmailBackend
-from django.core.mail.backends.console import \
-    EmailBackend as ConsoleEmailBackend
+from django.core.mail.backends.console import EmailBackend as ConsoleEmailBackend
 from django_ses import SESBackend as RealEmailBackend
 
 
@@ -27,9 +26,14 @@ class EmailBackend(BaseEmailBackend):
             elif isinstance(address, str):
                 return pattern in address
             else:
-                raise Exception(f"Unknown address type {type(address)} of {address}")  # pylint: disable=broad-exception-raised
+                raise Exception(
+                    f"Unknown address type {type(address)} of {address}"
+                )  # pylint: disable=broad-exception-raised
 
-        contains_pattern = map(lambda pattern: address_contains(pattern, email.to), self.allow_sending_patterns)
+        contains_pattern = map(
+            lambda pattern: address_contains(pattern, email.to),
+            self.allow_sending_patterns,
+        )
         contains_pattern = any(contains_pattern)
 
         # create and cache for further usage
@@ -40,6 +44,8 @@ class EmailBackend(BaseEmailBackend):
             return self.email_backend
         else:
             if not self.console_backend:
-                self.console_backend = ConsoleEmailBackend(self.fail_silently, **self.kwargs)
+                self.console_backend = ConsoleEmailBackend(
+                    self.fail_silently, **self.kwargs
+                )
                 self.console_backend.open()
             return self.console_backend

@@ -26,10 +26,11 @@ class AutoCompleteMixin:
     related_fields: List that will hold the related fields (ForeignKey and OneToOneField) of the model, for which
     autocomplete needs to be enabled.
     """
-    RELATED_FIELD_TYPES = ('ForeignKey', 'OneToOneField')
+
+    RELATED_FIELD_TYPES = ("ForeignKey", "OneToOneField")
 
     # Generic ForeignKey Fields always skip for autocomplete, since auto-completing them causes errors.
-    GENERIC_FOREIGNKEY_FIELDS = ('content_object', 'content_type', 'object_id')
+    GENERIC_FOREIGNKEY_FIELDS = ("content_object", "content_type", "object_id")
     skip_autocomplete_fields = ()
 
     def __init__(self, model, admin_site):
@@ -41,16 +42,21 @@ class AutoCompleteMixin:
             admin_site: Current admin site object.
         """
         super().__init__(model, admin_site)
-        fields = [field for field in self.model._meta.get_fields(
-        ) if field.name not in self.GENERIC_FOREIGNKEY_FIELDS]
+        fields = [
+            field
+            for field in self.model._meta.get_fields()
+            if field.name not in self.GENERIC_FOREIGNKEY_FIELDS
+        ]
         self.related_fields = [
-            field.name for field in fields
+            field.name
+            for field in fields
             if field.get_internal_type() in self.RELATED_FIELD_TYPES
         ]
         for field in self.skip_autocomplete_fields:
             if field in self.autocomplete_fields:
                 raise ValueError(
-                    f'autocomplete_fields and skip_autocomplete_fields cannot contain same field: {field}')
+                    f"autocomplete_fields and skip_autocomplete_fields cannot contain same field: {field}"
+                )
 
     def get_autocomplete_fields(self, request):
         """
@@ -80,9 +86,18 @@ class CustomModelAdmin(AutoCompleteMixin, admin.ModelAdmin):
     actions: List that holds the custom actions defined for the model in the Django admin.
     """
 
-    readonly_fields = ('created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by', 'deleted_by')
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "created_by",
+        "updated_by",
+        "deleted_by",
+    )
 
-    actions = ['restore_selected_records', ]
+    actions = [
+        "restore_selected_records",
+    ]
 
     def restore_selected_records(self, request, queryset):
         """
@@ -101,15 +116,13 @@ class CustomModelAdmin(AutoCompleteMixin, admin.ModelAdmin):
         )
         if count:
             self.message_user(
-                request,
-                f'Restored {count} records.',
-                level=messages.SUCCESS
+                request, f"Restored {count} records.", level=messages.SUCCESS
             )
         else:
             self.message_user(
                 request,
-                'All selected records are already active.',
-                level=messages.ERROR
+                "All selected records are already active.",
+                level=messages.ERROR,
             )
 
     def delete_model(self, request, obj):
@@ -177,10 +190,13 @@ class CSVActionMixin(CSVFileOrEmailModelMixin):
     list_skip_download: Tuple that holds the fields to be skipped in the CSV file.
     actions: List that holds the custom actions defined for the model in the Django admin.
     """
+
     csv_file_name = None
     list_download = ()
     list_skip_download = ()
-    actions = ['download_as_csv', ]
+    actions = [
+        "download_as_csv",
+    ]
 
     # pylint: disable=protected-access,inconsistent-return-statements
     @classmethod
@@ -217,15 +233,19 @@ class CSVActionMixin(CSVFileOrEmailModelMixin):
 
         compressed, buffer = self.conditional_compress(buffer)
         if compressed:
-            response = FileResponse(buffer, content_type='application/gzip')
-            response['Content-Disposition'] = f'attachment; filename={self.get_csv_file_name()}.csv.gz'
-            response['Content-Length'] = file_size(buffer)
+            response = FileResponse(buffer, content_type="application/gzip")
+            response[
+                "Content-Disposition"
+            ] = f"attachment; filename={self.get_csv_file_name()}.csv.gz"
+            response["Content-Length"] = file_size(buffer)
         else:
-            response = HttpResponse(buffer, content_type='text/csv')
-            response['Content-Disposition'] = f'attachment; filename={self.get_csv_file_name()}.csv'
+            response = HttpResponse(buffer, content_type="text/csv")
+            response[
+                "Content-Disposition"
+            ] = f"attachment; filename={self.get_csv_file_name()}.csv"
         return response
 
-    download_as_csv.short_description = 'Download selected rows as CSV'
+    download_as_csv.short_description = "Download selected rows as CSV"
 
     def get_columns(self, request, queryset):
         """
@@ -239,7 +259,9 @@ class CSVActionMixin(CSVFileOrEmailModelMixin):
             A list of fields to be included in the CSV file.
         """
         _list_download = self.list_download or self.get_list_display(request)
-        return [field for field in _list_download if field not in self.list_skip_download]
+        return [
+            field for field in _list_download if field not in self.list_skip_download
+        ]
 
     def get_buffer(self, queryset, columns):
         """

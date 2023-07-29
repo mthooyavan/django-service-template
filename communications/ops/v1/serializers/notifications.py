@@ -6,7 +6,6 @@ from utils.validations import validate_email_template
 
 # pylint: disable=abstract-method
 class NotificationValidationSerializer(serializers.Serializer):
-
     template = serializers.CharField()
     emails = serializers.ListSerializer(child=serializers.EmailField())
     from_address = serializers.EmailField(required=False)
