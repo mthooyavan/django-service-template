@@ -12,7 +12,6 @@ x-backend-service:
   &backend-service
   build: .  # build Docker image from Dockerfile in the current directory
   environment:  # environment variables passed to the service
-    &backend-service-env
     DJANGO_SETTINGS_MODULE: backend_service.settings  # specify Django settings module
   env_file: .env  # Load environment variables from a file named .env
 

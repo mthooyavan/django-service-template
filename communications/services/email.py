@@ -26,9 +26,9 @@ class EmailBackend(BaseEmailBackend):
             elif isinstance(address, str):
                 return pattern in address
             else:
-                raise Exception(
+                raise Exception(  # pylint: disable=broad-exception-raised
                     f"Unknown address type {type(address)} of {address}"
-                )  # pylint: disable=broad-exception-raised
+                )
 
         contains_pattern = map(
             lambda pattern: address_contains(pattern, email.to),

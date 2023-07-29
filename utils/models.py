@@ -10,8 +10,11 @@ def slug_generator() -> str:
     Examples: 8273176561, 10153962259
     """
     return str(
-        int(timezone.now().timestamp()) + random.randint(1, 9999999999)
-    )  # nosec B311
+        int(timezone.now().timestamp())
+        + random.randint(  # nosec B311: random is not used for security/cryptographic purposes
+            1, 9999999999
+        )
+    )
 
 
 class AutoUpdateMixin:

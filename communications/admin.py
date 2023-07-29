@@ -7,7 +7,6 @@ from communications import models
 class CommunicationLogAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "organisation",
         "communication_type",
         "client_notification_template_name",
         "sender_address",
@@ -19,7 +18,6 @@ class CommunicationLogAdmin(admin.ModelAdmin):
     )
     list_filter = (
         "user",
-        "organisation",
         "client_notification_template_name",
         "sender_address",
         "communication_type",

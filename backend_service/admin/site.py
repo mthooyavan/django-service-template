@@ -28,9 +28,8 @@ class AdminSite(admin.AdminSite):
     login_form = SuperUserAuthenticationForm
 
     def register(self, model_or_iterable, admin_class=None, **options):
-        from utils.admin import (
-            CustomModelAdmin,
-        )  # pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel
+        from utils.admin import CustomModelAdmin
 
         admin_class = admin_class or CustomModelAdmin
         super().register(model_or_iterable, admin_class=admin_class, **options)

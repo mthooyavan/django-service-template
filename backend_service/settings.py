@@ -160,33 +160,45 @@ ENFORCE_COMPRESSION_FILE_SIZE = ENV(
 )  # 5 MB
 
 # Application definition
+REST_FRAMEWORK_APPS = [
+    "rest_framework",  # Django REST Framework
+    "rest_framework.authtoken",  # Django REST Framework Token Authentication
+    "rest_framework_simplejwt.token_blacklist",  # Django REST Framework Simple JWT Token Blacklist
+]
+
+THIRD_PARTY_APPS = [
+    'corsheaders',  # CORS Headers
+    'drf_yasg',  # Swagger
+    'phonenumber_field',  # Phone Number Field
+    "django_extensions",  # Django Extensions
+]
+
+HEALTH_CHECK_APPS = [
+    'health_check',  # Health Check Core
+    'health_check.db',  # Health Check DB
+    'health_check.cache',  # Health Check Cache
+    'health_check.storage',  # Health Check Storage
+    'health_check.contrib.migrations',  # Health Check Migrations
+    'health_check.contrib.celery',  # Health Check Celery
+    'health_check.contrib.celery_ping',  # Health Check Celery Ping
+    'health_check.contrib.psutil',  # Health Checks Disk Space and Memory Usage, requires psutil
+    'health_check.contrib.redis',  # Health Check Redis
+]
+
+PROJECT_APPS = [
+    'backend_service',  # Backend Service
+    'communications',  # Communications
+    'engineering',  # Engineering
+]
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    'backend_service.admin.AdminConfig',  # Admin Config (Custom Admin)
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third-Party Apps
-    "rest_framework",
-    "rest_framework.authtoken",
-    "rest_framework_simplejwt.token_blacklist",
-    "corsheaders",
-    "drf_yasg",
-    "phonenumber_field",
-    "django_extensions",
-    # Health Check
-    "health_check",  # required
-    "health_check.db",  # stock Django health checkers
-    "health_check.cache",
-    "health_check.storage",
-    "health_check.contrib.migrations",
-    "health_check.contrib.celery",  # requires celery
-    "health_check.contrib.celery_ping",  # requires celery
-    "health_check.contrib.psutil",  # disk and memory utilization; requires psutil
-    "health_check.contrib.redis",  # requires Redis broker
-]
+] + REST_FRAMEWORK_APPS + THIRD_PARTY_APPS + HEALTH_CHECK_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
