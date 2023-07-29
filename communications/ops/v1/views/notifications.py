@@ -2,11 +2,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from communications.ops.v1.serializers import NotificationValidationSerializer
-from communications.tasks.emails import send_notifications
 from backend_service import errors
 from backend_service.authentication import IPAddressAuthentication
 from backend_service.permissions import AllowAny
+from communications.ops.v1.serializers import NotificationValidationSerializer
+from communications.tasks.emails import send_notifications
 
 
 class SendNotificationsView(APIView):

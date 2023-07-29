@@ -1,7 +1,8 @@
 from typing import List, Union
 
 from django.core.mail.backends.base import BaseEmailBackend
-from django.core.mail.backends.console import EmailBackend as ConsoleEmailBackend
+from django.core.mail.backends.console import \
+    EmailBackend as ConsoleEmailBackend
 from django_ses import SESBackend as RealEmailBackend
 
 

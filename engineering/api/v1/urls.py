@@ -1,5 +1,4 @@
-from django.urls import path, include  # pylint: disable=unused-import
-
+from django.urls import include, path  # pylint: disable=unused-import
 
 urlpatterns = [
 ]

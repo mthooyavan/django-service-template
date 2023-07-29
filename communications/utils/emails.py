@@ -1,7 +1,7 @@
 import io
 from collections import namedtuple
 from smtplib import SMTPRecipientsRefused
-from typing import Union, List
+from typing import List, Union
 
 from django.conf import settings
 from django.contrib.auth import get_user_model

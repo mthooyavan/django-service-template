@@ -1,5 +1,5 @@
 # pylint:disable=too-many-arguments
-from typing import Optional, Union, List
+from typing import List, Optional, Union
 
 from django.conf import settings
 from django.contrib.auth import get_user_model

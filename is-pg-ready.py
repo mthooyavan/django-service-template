@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+
 import psycopg2
 
 dbname = os.environ.get('POSTGRES_DB')

@@ -4,7 +4,7 @@ import os
 
 from django.contrib import admin, messages
 from django.contrib.admin.utils import lookup_field
-from django.http import HttpResponseRedirect, FileResponse, HttpResponse
+from django.http import FileResponse, HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 
 from utils.file import file_size
