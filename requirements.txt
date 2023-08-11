@@ -81,7 +81,7 @@ django-phonenumber-field[phonenumbers]==7.1.0
     # via -r requirements.in
 django-ses==3.5.0
     # via -r requirements.in
-django-timezone-field==5.1
+django-timezone-field==5.1.0
     # via -r requirements.in
 djangorestframework==3.14.0
     # via
@@ -103,7 +103,7 @@ freezegun==1.2.2
     # via -r requirements.in
 gitdb==4.0.9
     # via gitpython
-gitpython==3.1.30
+gitpython==3.1.32
     # via bandit
 gunicorn==21.2.0
     # via -r requirements.in
