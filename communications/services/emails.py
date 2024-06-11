@@ -1,5 +1,5 @@
 # pylint:disable=too-many-arguments
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -20,7 +20,7 @@ class EmailService:
     def __init__(
         self,
         templates_path,
-        to_addresses: Union[List[User], List[str]],
+        to_addresses: List[User] | List[str],
         from_address: str = settings.EMAIL_FROM,
         context: dict = None,
         user: User = None,
@@ -52,7 +52,6 @@ class EmailService:
         user = self.user if isinstance(self.user, User) else None
         return CommunicationLog.objects.create(
             user=user.id if user else None,
-            organisation=user.organisation if user else None,
             content=f"{self.email.subject}\n\n{self.email.body}",
             sender_address=self.from_address,
             recipient_address=[self.to_addresses],
@@ -67,7 +66,6 @@ class EmailService:
         user = self.user if isinstance(self.user, User) else None
         log = CommunicationLog(
             user=user.id if user else None,
-            organisation=user.organisation if user else None,
             content=f"{self.email.subject}\n\n{self.email.body}",
             sender_address=self.from_address,
             recipient_address=[self.to_addresses],

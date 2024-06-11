@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List
 
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.console import EmailBackend as ConsoleEmailBackend
@@ -19,16 +19,14 @@ class EmailBackend(BaseEmailBackend):
             backend = self._get_backend(message)
             backend.send_messages([message])
 
-    def _get_backend(self, email) -> Union[ConsoleEmailBackend, RealEmailBackend]:
-        def address_contains(pattern, address: Union[str, List[str]]):
+    def _get_backend(self, email) -> ConsoleEmailBackend | RealEmailBackend:
+        def address_contains(pattern, address: str | List[str]):
             if isinstance(address, list):
                 return all(map(lambda a: pattern in a, address))
             elif isinstance(address, str):
                 return pattern in address
             else:
-                raise Exception(  # pylint: disable=broad-exception-raised
-                    f"Unknown address type {type(address)} of {address}"
-                )
+                raise TypeError(f"Unknown address type {type(address)} of {address}")
 
         contains_pattern = map(
             lambda pattern: address_contains(pattern, email.to),

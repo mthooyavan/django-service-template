@@ -1,2 +1,1 @@
-import factory
-from sms import models
+import factory  # pylint: disable=unused-import

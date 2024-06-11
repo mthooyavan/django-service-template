@@ -6,7 +6,7 @@ from celery import Celery
 from celery.schedules import crontab  # pylint: disable=unused-import
 from django.conf import settings
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend_service.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend_service.settings.production")
 
 # pylint: disable=invalid-name
 app = Celery("backend_service")
