@@ -39,6 +39,27 @@ This is a Django-based web application template designed to provide a strong sta
 - Add your SSH key to the ssh-agent: `ssh-add ~/.ssh/id_rsa`
 - Add the SSH key to your GitHub account. Follow the instructions [here](https://docs.github.com/en/github/authenticating-to-github/adding-a-new-ssh-key-to-your-github-account).
 
+## Internationalization (i18n) and Auto-translation
+
+We've added support for internationalization (i18n). Along with that, we've included a custom script for auto-translation using Google Translate. To ensure the translations are up-to-date, developers should:
+
+1. **Get Google Translate API Key**:
+    - Before performing translations, obtain the Google Translate API key from the Google Cloud Platform.
+    - Add the API key to the project in the file named `credential_gcp.json` and add `GOOGLE_APPLICATION_CREDENTIALS=credential_gcp.json` to the `.env` file.
+    - Place this file in the project root directory right after cloning the project. If this step is skipped, you might encounter an error from Docker indicating that the file is missing.
+
+2. **Update Translation Messages**:
+    - Whenever you add new text that supports translation, run:
+        ```shell
+        make makemessages
+        ```
+
+3. **Compile Messages**:
+    - After updating the translation messages, run:
+        ```shell
+        make compilemessages
+        ```
+
 ## Getting Started
 
 1. **Clone the repository**:
@@ -55,15 +76,18 @@ This is a Django-based web application template designed to provide a strong sta
     - In the Makefile, update any references to `backend_service` to your new project name.
     - In the `tests` directory, update any imports from `backend_service` to your new project name.
     - In the `.github/workflows` directory, update any references to `backend_service` to your new project name.
-    - In the `manage.py` file, update the `os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend_service.settings')` line to your new project name.
+    - In the `manage.py` file, update the `os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend_service.settings.production')` line to your new project name.
 
 3. **Create a .env file**:
     After cloning the repository, you need to create a .env file in the project root directory to store all environment variables. The required environment variables are:
     - `POSTGRES_USER`: The username for the PostgreSQL database.
     - `POSTGRES_PASSWORD`: The password for the PostgreSQL database.
     - `POSTGRES_DB`: The name of the PostgreSQL database.
-    - `POSTGRES_HOST`: The host of the PostgreSQL database.
     - `POSTGRES_PORT`: The port of the PostgreSQL database.
+    - `PRIMARY_POSTGRES_HOST`: The host of the Primary PostgreSQL database.
+    - `PRIMARY_POSTGRES_PORT`: The port of the Primary PostgreSQL database.
+    - `SECONDARY_POSTGRES_HOST`: The host of the Secondary PostgreSQL database.
+    - `SECONDARY_POSTGRES_PORT`: The port of the Secondary PostgreSQL database.
     - `REDIS_URL`: The URL for the Redis instance.
     - `APP_PORT`: The port on which the Django app will run.
 

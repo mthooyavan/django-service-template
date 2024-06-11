@@ -1,7 +1,7 @@
 import io
 from collections import namedtuple
 from smtplib import SMTPRecipientsRefused
-from typing import List, Union
+from typing import List
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -39,9 +39,9 @@ class Email(EmailMultiAlternatives):
         self,
         subject: str = "",
         body: str = "",
-        to: Union[List[User], List[str]] = None,
-        bcc: Union[List[User], List[str]] = None,
-        cc: Union[List[User], List[str]] = None,
+        to: List[User] | List[str] = None,
+        bcc: List[User] | List[str] = None,
+        cc: List[User] | List[str] = None,
         from_email: str = settings.EMAIL_FROM,
         html_body: str = "",
         **kwargs,
@@ -82,9 +82,9 @@ class Email(EmailMultiAlternatives):
         cls,
         templates_path: str,
         context: dict,
-        to: Union[List[User], List[str]] = None,
-        bcc: Union[List[User], List[str]] = None,
-        cc: Union[List[User], List[str]] = None,
+        to: List[User] | List[str] = None,
+        bcc: List[User] | List[str] = None,
+        cc: List[User] | List[str] = None,
         from_email: str = settings.EMAIL_FROM,
         **kwargs,
     ) -> "Email":

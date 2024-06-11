@@ -79,7 +79,7 @@ disable=C0321,
         global-statement,
         invalid-name,
         no-else-return,
-
+        R0801,
 
 #   C0111 = Missing docstring
 #   R0903 = Too few public methods
