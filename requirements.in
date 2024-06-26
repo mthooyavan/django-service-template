@@ -12,7 +12,7 @@ django[argon2]==5.0.6
 django-phonenumber-field[phonenumbers]==7.3.0
 django-timezone-field==6.1.0
 djangorestframework-simplejwt==5.3.1
-djangorestframework==3.15.1
+djangorestframework==3.15.2
 drf-nested-routers==0.94.1
 drf_yasg==1.21.7
 factory-boy==3.3.0
